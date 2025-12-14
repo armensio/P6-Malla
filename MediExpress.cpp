@@ -206,8 +206,8 @@ MediExpress::MediExpress(const std::string &fichero_pamedicamentos, const std::s
                 if(stof(cordx)>xmax){
                     xmax=stof(cordx);
                 }
-                if(stof(cordy)>xmax){
-                    xmax=stof(cordy);
+                if(stof(cordy)>ymax){
+                    ymax=stof(cordy);
                 }
 
                 fila = "";
@@ -233,7 +233,7 @@ MediExpress::MediExpress(const std::string &fichero_pamedicamentos, const std::s
     }
 
     multimap<string,Farmacia>::iterator iter=pharmacy.begin();
-    grid=MallaRegular<Farmacia*>(xmin,xmax,ymin,ymax,100);
+    grid=MallaRegular<Farmacia*>(xmin,ymin,xmax,ymax,100);
     while(iter!=pharmacy.end()){
         grid.insertar(iter->second.getCoordenadas().getLongitud(),iter->second.getCoordenadas().getLatitud(),&iter->second);
         iter++;
