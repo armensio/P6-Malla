@@ -9,6 +9,8 @@
 #include <iostream>
 using namespace std;
 
+#include <map>
+#include <cmath>
 
 template<typename T>
 class MallaRegular {
@@ -37,7 +39,7 @@ public:
             typename list<T>::iterator it;
             it=puntos.begin();
             for(;it!=puntos.end();++it){
-                if(*it!=dato){
+                if(*it==dato){
                     puntos.erase(it);
                     tam--;
                     return true;
@@ -46,6 +48,8 @@ public:
             return false;
         }
         int getTam(){return tam;}
+        typename list<T>::iterator begin() { return puntos.begin(); }
+        typename list<T>::iterator end() { return puntos.end(); }
     };
 private:
     float xMin,yMin,xMax,yMax;
@@ -92,7 +96,60 @@ MallaRegular<T>::MallaRegular(float xMin, float yMin, float xMax, float yMax, fl
 
 template<typename T>
 vector<T> MallaRegular<T>::buscarCercana(float xcentro, float ycentro, int n) {
+    vector<T> Ncercanos;
+    map<float, T> cercanos;
+    Casilla *c1;
+    int p = nDiv;
 
+    // Buscar el radio mínimo que contenga al menos n elementos
+    for (int k = 1; k < nDiv; k++) {
+        int cont = 0;
+        for (float i = xcentro - (tamCasillaX * k); i < xcentro + (tamCasillaX * k); i += tamCasillaX) {
+            for (float j = ycentro - (tamCasillaY * k); j < ycentro + (tamCasillaY * k); j += tamCasillaY) {
+                if (i >= xMin && i <= xMax && j >= yMin && j <= yMax) {
+                    c1 = obtenerCasilla(i, j);
+                    if (c1) {
+                        cont += c1->getTam();
+                    }
+                }
+            }
+        }
+        if (cont >= n) {
+            p = k + 1;
+            break;
+        }
+    }
+
+    // Recopilar todos los elementos en el radio encontrado y calcular distancias
+    for (float i = xcentro - (tamCasillaX * p); i < xcentro + (tamCasillaX * p); i += tamCasillaX) {
+        for (float j = ycentro - (tamCasillaY * p); j < ycentro + (tamCasillaY * p); j += tamCasillaY) {
+            if (i >= xMin && i <= xMax && j >= yMin && j <= yMax) {
+                c1 = obtenerCasilla(i, j);
+                if (c1) {
+                    // Acceder a la lista de puntos de la casilla
+                    typename list<T>::iterator it;
+                    // Necesitamos acceder a la lista privada, deberás añadir un método público en Casilla
+                    // Por ahora, asumiendo que puedes acceder o crear un getter
+                    for (it = c1->begin(); it != c1->end(); ++it) {
+                        // Calcular distancia euclidiana
+                        float dx = xcentro - (*it)->getCoordenadas().getLongitud();
+                        float dy = ycentro - (*it)->getCoordenadas().getLatitud();
+                        float distancia = sqrt(dx * dx + dy * dy);
+
+                        cercanos.insert(make_pair(distancia, *it));
+                    }
+                }
+            }
+        }
+    }
+
+    // Quedarnos con los n más cercanos
+    typename map<float, T>::iterator itm = cercanos.begin();
+    for (int i = 0; i < n && itm != cercanos.end(); i++, ++itm) {
+        Ncercanos.push_back(itm->second);
+    }
+
+    return Ncercanos;
 }
 
 

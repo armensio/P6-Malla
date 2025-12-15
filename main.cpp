@@ -53,42 +53,8 @@ int main() {
     try {
         MediExpress m("../pa_medicamentos.csv","../lab2.csv","../prueba.csv","../usuarios.csv",3310,0.65);
         cout << endl << endl;
-        //m.mostrarEstadoTabla();
-
-
-        // SEVILLA
-        /*
-        vector<Farmacia*> sevilla=m.buscarFarmacias("SEVILLA");
-        PaMedicamento *pa;
-        cout << endl << endl << endl;
-        cout << "Farmacias en Sevilla: " << sevilla.size() << endl;
-        int unidades;
-        for(int i=0;i<sevilla.size();i++){
-            for(int j=0;j<12;j++) {
-                vector<PaMedicamento*> medicamentos2=sevilla[i]->buscaMedicamNombre("MAGNESIO");
-                for(int k=0;k<medicamentos2.size();k++) {
-                    unidades = sevilla[i]->comprarMedicam(medicamentos2[k]->getIdNum(), 1, pa);
-                    cout << "En la farmacia " << sevilla[i]->getCif() << " hay " << unidades
-                         << " unidades de " << medicamentos2[k]->getNombre() << endl;
-                    if (unidades == 0) {
-                        unidades = sevilla[i]->comprarMedicam(3640, 1, pa);
-                        cout << "En la farmacia " << sevilla[i]->getCif() << " hay " << unidades
-                             << " unidades de Oxido de magnesio" << endl;
-                        if (unidades == 0) {
-                            cout << "No hay ninguno de los medicamentos" << endl;
-                        }
-                    }
-                }
-            }
-        }*/
-
-
-        //vector<Farmacia*> jaen=m.buscarFarmacias("JAEN");
-        //cout << "Farmacias en Jaen: " << jaen.size() << endl;
-        //Esto es lo que debería poner pero no me coge ninguna farmacia, entonces he buscado a mano la única farmacia
 
         Farmacia *ubeda=m.buscarFarmacia("E23319585");
-        vector<PaMedicamento*> medicamentosMagnesio=ubeda->buscaMedicamNombre("MAGNESIO CLORURO HEXAHIDRATO");
 
 
         m.suministrarFarmacia(ubeda,10904,10);
@@ -128,11 +94,11 @@ int main() {
                 }
             }
 
-            /*
+
             cercana=jaen[i]->getFarmaciaCercana(1);
             if(cercana[0]->getLocalidad()=="UBEDA"){
                 cout << "La farmacia más cercana al usuario " << jaen[i]->getId() << " es la de Úbeda" << endl;
-            }*/
+            }
             contador++;
         }
 
@@ -144,12 +110,13 @@ int main() {
         int unidades=0;
         for(int i=0;i<sevilla.size();i++){
             cercana2=sevilla[i]->getFarmaciaCercana(1);
+            m.suministrarFarmacia(cercana2[0],3629,10);
             medicamentos2=sevilla[i]->quieroMedicam("MAGNESIO",cercana2[0]);
-            unidades=sevilla[i]->comprarMedicam(1,medicamentos2[i],cercana2[0]);
-            cout << "Quedan " << unidades << medicamentos2[i]->getNombre() << endl;
-            cout << "El usuario " << sevilla[i]->getId() << " va a comprar 1 " << medicamentos2[i]->getNombre() << " en la farmacia de Úbeda" << endl;
+            unidades=sevilla[i]->comprarMedicam(1,medicamentos2[0],cercana2[0]);
+            cout << "Quedan " << unidades << medicamentos2[0]->getNombre() << endl;
+            cout << "El usuario " << sevilla[i]->getId() << " va a comprar 1 " << medicamentos2[0]->getNombre() << " en la farmacia de Úbeda" << endl;
             if(unidades==0){
-                cout << "Se han pedido 10 unidades de " << medicamentos2[i] << endl;
+                cout << "Se han pedido 10 unidades de " << medicamentos2[0] << endl;
             }
         }
 
@@ -158,6 +125,7 @@ int main() {
         vector<Usuario*> usuarios_madrid=m.buscarUsuarios("Madrid");
         vector<Farmacia*> cercana3;
         for(int i=0;i<farmacias_madrid.size();i++){
+            m.suministrarFarmacia(farmacias_madrid[i],6847,10);
             bismutos=farmacias_madrid[i]->buscaMedicamNombre("BISMUTO");
             for(int j=0;j<usuarios_madrid.size();j++){
                cercana3=usuarios_madrid[j]->getFarmaciaCercana(3);
@@ -169,7 +137,7 @@ int main() {
             for(int k=0;k<bismutos.size();k++){
                 farmacias_madrid[i]->eliminarStock(bismutos[k]->getIdNum());
             }
-            if(farmacias_madrid[i]->buscaMedicamId(bismutos[0]->getIdNum())==0){
+            if(farmacias_madrid[i]->buscaMedicamNombre("BISMUTO").empty()){
                 cout << "Se ha eliminado correctamente los bismutos de la farmacia " << farmacias_madrid[i]->getNombre() << endl;
             }
         }
