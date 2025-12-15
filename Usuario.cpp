@@ -49,10 +49,10 @@ vector<Farmacia*> Usuario::getFarmaciaCercana(int n) {
     }
 }
 
-vector<PaMedicamento*> Usuario::quieroMedicam(std::string nombre, Farmacia f) {
-    f.comprarMedicam(f.buscaMedicamNombre(nombre)[0]->getIdNum(),1,f.buscaMedicamNombre(nombre)[0]);
+vector<PaMedicamento*> Usuario::quieroMedicam(std::string nombre, Farmacia *f) {
+    return f->buscaMedicamNombre(nombre);
 }
 
-int Usuario::comprarMedicam(int n, PaMedicamento pa, Farmacia f) {
-    return f.comprarMedicam(pa.getIdNum(),n,&pa);
+int Usuario::comprarMedicam(int n, PaMedicamento *pa, Farmacia *f) {
+    return f->comprarMedicam(pa->getIdNum(),n,pa);
 }

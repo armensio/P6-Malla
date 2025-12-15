@@ -172,7 +172,7 @@ MediExpress::MediExpress(const std::string &fichero_pamedicamentos, const std::s
     std::string provincia = "";
     string cordx="";
     string cordy="";
-    float xmax=-999999,xmin=9999999,ymax=-999999,ymin=999999;
+    float xmax=0,xmin=10000,ymax=0,ymin=10000;
 
     is.open(fichero_farmacias); //carpeta de proyecto
     if (is.good()) {
@@ -233,13 +233,14 @@ MediExpress::MediExpress(const std::string &fichero_pamedicamentos, const std::s
     }
 
     multimap<string,Farmacia>::iterator iter=pharmacy.begin();
-    grid=MallaRegular<Farmacia*>(xmin,ymin,xmax,ymax,100);
+    grid=MallaRegular<Farmacia*>(xmin-0.1,ymin-0.1,xmax+0.1,ymax+0.1,520);
     while(iter!=pharmacy.end()){
         grid.insertar(iter->second.getCoordenadas().getLongitud(),iter->second.getCoordenadas().getLatitud(),&iter->second);
         iter++;
     }
 
-
+    cout << "Máximo de elementos por celda: " << grid.maxElementosPorCelda() << endl;
+    cout << "Promedio de elementos por celda: " << grid.promedioElementosPorCelda() << endl;
 
     //LEO DE NUEVO LAS FARMACIAS
 
@@ -474,5 +475,17 @@ void MediExpress::mostrarEstadoTabla() {
 }
 
 vector<Farmacia*> MediExpress::buscarFarmacias(UTM posicion, int n) {
-    //return grid.buscarCercana(posicion.getLongitud(),posicion.getLatitud(),n);
+    return grid.buscarCercana(posicion.getLongitud(),posicion.getLatitud(),n);
+}
+
+vector<Usuario*> MediExpress::buscarUsuarios(std::string provincia) {
+    vector<Usuario*> resultado;
+    map<int,Usuario>::iterator i=users.begin();
+    while(i!=users.end()){
+        if(i->second.getProvincia().find(provincia)!=string::npos){
+            resultado.push_back(&i->second);
+        }
+        i++;
+    }
+    return resultado;
 }

@@ -52,6 +52,8 @@ public:
     void mostrarEstadoTabla();
 
     vector<Farmacia*> buscarFarmacias(UTM posicion,int n);
+
+    vector<Usuario*> buscarUsuarios(string provincia);
 };
 
 

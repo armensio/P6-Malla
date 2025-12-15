@@ -9,16 +9,20 @@
 #include <iostream>
 using namespace std;
 
+
 template<typename T>
 class MallaRegular {
 public:
     class Casilla {
     private:
         list<T> puntos;
-        int tam;
+        int tam=0;
     public:
         Casilla() {}
-        void insertar(const T &dato){puntos.push_back(dato);tam++;}
+        void insertar(const T &dato){
+            puntos.push_back(dato);
+            tam++;
+        }
         T* buscar(const T &dato){
             typename list<T>::iterator it;
             it=puntos.begin();
@@ -44,12 +48,21 @@ public:
         int getTam(){return tam;}
     };
 private:
-    float xMin=-2,yMin=-2,xMax=5000,yMax=5000;
-    float tamCasillaX=1,tamCasillaY=1;
+    float xMin,yMin,xMax,yMax;
+    float tamCasillaX=1,tamCasillaY=1,nDiv;
     vector<vector<Casilla>> matriz;
     Casilla* obtenerCasilla(float x,float y){
-        unsigned int i=(x-xMin)/tamCasillaX;
-        unsigned int j=(y-yMin)/tamCasillaY;
+        int i=(x-xMin)/tamCasillaX;
+        int j=(y-yMin)/tamCasillaY;
+
+        if(i >= matriz.size() || j >= matriz[i].size()){
+            cerr << "ERROR: Indices fuera de rango - i: " << i << " j: " << j
+                 << " (matriz: " << matriz.size() << "x" << matriz[i].size() << ")" << endl;
+            cerr << "Coordenadas: x=" << x << " y=" << y << endl;
+            cerr << "Limites: xMin=" << xMin << " xMax=" << xMax
+                 << " yMin=" << yMin << " yMax=" << yMax << endl;
+            return nullptr;
+        }
         return &matriz[i][j];
     }
 public:
@@ -70,11 +83,18 @@ MallaRegular<T>::MallaRegular() {
 }
 
 template<typename T>
-MallaRegular<T>::MallaRegular(float xMin, float yMin, float xMax, float yMax, float nDiv):xMin(xMin), yMin(yMin), xMax(xMax), yMax(yMax){
+MallaRegular<T>::MallaRegular(float xMin, float yMin, float xMax, float yMax, float nDiv):xMin(xMin), yMin(yMin), xMax(xMax), yMax(yMax), nDiv(nDiv){
             tamCasillaX= (xMax-xMin) / nDiv;
             tamCasillaY= (yMax-yMin) / nDiv;
             matriz.insert(matriz.begin(), nDiv, vector<Casilla>(nDiv));
+            //matriz.resize(nDiv, vector<Casilla>(nDiv));
 }
+
+template<typename T>
+vector<T> MallaRegular<T>::buscarCercana(float xcentro, float ycentro, int n) {
+
+}
+
 
 template<typename T>
 void MallaRegular<T>::insertar(float x, float y, const T &dato) {
@@ -100,8 +120,8 @@ bool MallaRegular<T>::borrar(float x, float y, const T &dato) {
 template<typename T>
 unsigned int MallaRegular<T>::maxElementosPorCelda() {
     unsigned int max=0;
-    for(int i=0;i<xMax;i++){
-        for(int j=0;j<yMax;j++){
+    for(int i=0;i<nDiv;i++){
+        for(int j=0;j<nDiv;j++){
             if(matriz[i][j].getTam()>max){
                 max=matriz[i][j].getTam();
             }
@@ -113,12 +133,12 @@ unsigned int MallaRegular<T>::maxElementosPorCelda() {
 template<typename T>
 float MallaRegular<T>::promedioElementosPorCelda() {
     int suma=0;
-    for(int i=0;i<xMax;i++){
-        for(int j=0;j<yMax;j++){
+    for(int i=0;i<nDiv;i++){
+        for(int j=0;j<nDiv;j++){
             suma+=matriz[i][j].getTam();
         }
     }
-    return suma/(xMax/tamCasillaX);
+    return suma/(nDiv*nDiv);
 }
 
 

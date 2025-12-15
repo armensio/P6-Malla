@@ -29,8 +29,8 @@ public:
     void setCoord(const UTM &coord);
 
     vector<Farmacia*> getFarmaciaCercana(int n); //REVISAR
-    vector<PaMedicamento*> quieroMedicam(string nombre,Farmacia f); //Hecha mal?
-    int comprarMedicam(int n,PaMedicamento pa, Farmacia f); //REVISAR
+    vector<PaMedicamento*> quieroMedicam(string nombre,Farmacia *f); //Hecha mal?
+    int comprarMedicam(int n,PaMedicamento *pa, Farmacia *f); //REVISAR
 };
 
 
